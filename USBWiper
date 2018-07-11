@@ -1,6 +1,6 @@
 #!/bin/bash
 intHDD=$( lsblk|grep SWAP|cut -c 7,8,9 )
-while ! [[ $choice =~ sd[a-z]$ ]]
+while ! [[ $choice =~ ^sd[a-z]$ ]]
 do
 	clear
 	echo 'Wipe USBs, HDDs or SSDs by overwriting every sector with 0x00s'
