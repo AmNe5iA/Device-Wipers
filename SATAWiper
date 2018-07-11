@@ -1,6 +1,6 @@
 #!/bin/bash
 intHDD=$( lsblk|grep SWAP|cut -c 7,8,9 )
-while ! [[ $choice =~ sd[a-z]$ ]]
+while ! [[ $choice =~ ^sd[a-z]$ ]]
 do
 	clear
 	echo 'Secure Erase for SATA HDDs and SSDs'
