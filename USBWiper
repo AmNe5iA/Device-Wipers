@@ -1,0 +1,24 @@
+#!/bin/bash
+intHDD=$( lsblk|grep SWAP|cut -c 7,8,9 )
+while ! [[ $choice =~ sd[a-z]$ ]]
+do
+	clear
+	echo 'Wipe USBs, HDDs or SSDs by overwriting every sector with 0x00s'
+	echo ''
+	lsblk|grep -v $intHDD|grep -v sr0
+	echo ''
+	read -p 'Please Enter a device choice from the above list (sdb, sdc, sdd etc.): ' choice
+	echo ''
+done
+if [[ $choice = $intHDD ]]
+then
+	echo 'You have chosen the internal HDD. Aborting...'
+	exit 1
+elif [[ $( lsblk|grep $choice ) = '' ]]
+then
+	echo "No block device '$choice' found.  Aborting..."
+	exit 1
+else
+	dc3dd wipe=/dev/$choice	
+fi
+
