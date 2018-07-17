@@ -36,6 +36,28 @@ else
 			echo 'Drive is frozen.'
 			echo 'Try quickly disconnecting and reconnecting the power to the drive.'
 			echo 'Aborting...'
+			exit 1
 		fi
+	fi
+fi
+while ! [[ $verify =~ ^[yYnN]$ ]]
+do
+	echo ''
+	read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
+done
+echo ''
+if [[ $verify =~ ^[nN]$ ]]
+then
+	echo 'Not verifying...'
+	exit 0
+else
+	verified=$(pv /dev/$choice|cmp - /dev/zero 2>&1|grep -v EOF|cut -f 4,5 -d ' '|cut -d ',' -f 1 )
+	echo ''
+	if [[ $verified = '' ]]
+	then
+		echo "$choice has been completely wiped..."
+	else
+		echo "$choice has not wiped correctly, $verified is not 0x00!"
+		exit 1
 	fi
 fi
