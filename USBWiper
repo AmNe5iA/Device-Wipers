@@ -20,19 +20,21 @@ then
 	echo "No block device '$choice' found.  Aborting..."
 	exit 1
 else
+	while ! [[ $verify =~ ^[yYnN]$ ]]
+	do
+		echo ''
+		read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
+	done
 	dc3dd wipe=/dev/$choice	
 fi
-while ! [[ $verify =~ ^[yYnN]$ ]]
-do
-	echo ''
-	read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
-done
 echo ''
 if [[ $verify =~ ^[nN]$ ]]
 then
 	echo 'Not verifying...'
 	exit 0
 else
+	echo 'Verifying...'
+	echo ''
 	verified=$(pv /dev/$choice|cmp - /dev/zero 2>&1|grep -v EOF|cut -f 4,5 -d ' '|cut -d ',' -f 1 )
 	echo ''
 	if [[ $verified = '' ]]

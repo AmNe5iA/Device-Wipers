@@ -26,12 +26,17 @@ else
 	else
 		if [[ $( hdparm -I /dev/$choice|grep frozen|cut -f 2 ) = 'not' ]]
 		then
+			while ! [[ $verify =~ ^[yYnN]$ ]]
+			do
+				read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
+				echo ''
+			done
 			hdparm --user-master u --security-set-pass Wipe /dev/$choice > /dev/null #2>&1
 			echo 'Issuing SECURITY ERASE command.  It should take '
 			hdparm -I /dev/$choice|grep SECURITY
 			hdparm --user-master u --security-erase Wipe /dev/$choice > /dev/null #2>&1
 			echo ''
-			echo 'All done!'
+			echo "$choice has been wiped!"
 		else
 			echo 'Drive is frozen.'
 			echo 'Try quickly disconnecting and reconnecting the power to the drive.'
@@ -40,17 +45,14 @@ else
 		fi
 	fi
 fi
-while ! [[ $verify =~ ^[yYnN]$ ]]
-do
-	echo ''
-	read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
-done
 echo ''
 if [[ $verify =~ ^[nN]$ ]]
 then
 	echo 'Not verifying...'
 	exit 0
 else
+	echo 'Verifying...'
+	echo ''
 	verified=$(pv /dev/$choice|cmp - /dev/zero 2>&1|grep -v EOF|cut -f 4,5 -d ' '|cut -d ',' -f 1 )
 	echo ''
 	if [[ $verified = '' ]]
