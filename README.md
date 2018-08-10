@@ -7,6 +7,6 @@ Usage:
 
 or
 
-"sudo ./USBWiper" - to use a dd command to wipe the device using 0x00s on every sector.
+"sudo ./DDWiper" - to use a dd command to wipe the device using 0x00s on every sector.
 
 Requires 'dc3dd', 'pv' and 'hdparm' commands are installed.
