@@ -3,40 +3,40 @@ intHDD=$( lsblk|grep SWAP|cut -c 7,8,9 )
 while ! [[ $choice =~ ^sd[a-z]$ ]]
 do
 	clear
-	echo 'Wipe USBs, HDDs or SSDs by overwriting every sector with 0x00s'
-	echo ''
+	echo "Wipe USBs, HDDs or SSDs by overwriting every sector with 0x00s."
+	echo ""
 	lsblk|grep -v $intHDD|grep -v sr0
-	echo ''
-	read -p 'Please Enter a device choice from the above list (sdb, sdc, sdd etc.): ' choice
+	echo ""
+	read -p "Please Enter a device choice from the above list (sdb, sdc, sdd etc.): " choice
 done
 if [[ $choice = $intHDD ]]
 then
-	echo ''
-	echo 'You have chosen the internal HDD. Aborting...'
+	echo ""
+	echo "You have chosen the internal HDD.  Aborting..."
 	exit 1
 elif [[ $( lsblk|grep $choice ) = '' ]]
 then
-	echo ''
+	echo ""
 	echo "No block device '$choice' found.  Aborting..."
 	exit 1
 else
 	while ! [[ $verify =~ ^[yYnN]$ ]]
 	do
-		echo ''
+		echo ""
 		read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
 	done
 	dc3dd wipe=/dev/$choice	
 fi
-echo ''
+echo ""
 if [[ $verify =~ ^[nN]$ ]]
 then
-	echo 'Not verifying...'
+	echo "Not verifying..."
 	exit 0
 else
-	echo 'Verifying...'
-	echo ''
+	echo "Verifying..."
+	echo ""
 	verified=$(pv /dev/$choice|cmp - /dev/zero 2>&1|grep -v EOF|cut -f 4,5 -d ' '|cut -d ',' -f 1 )
-	echo ''
+	echo ""
 	if [[ $verified = '' ]]
 	then
 		echo "$choice has been completely wiped..."

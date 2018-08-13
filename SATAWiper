@@ -12,7 +12,7 @@ do
 done
 if [[ $choice = $intHDD ]]
 then
-	echo "You have chosen the internal HDD. Aborting..."
+	echo "You have chosen the internal HDD.  Aborting..."
 	exit 1
 elif [[ $( lsblk|grep $choice ) = '' ]]
 then
@@ -25,8 +25,8 @@ else
 		echo "Use DDwiper instead.  Aborting..."
 		exit 1
 	fi
-	Security=$( hdparm -I /dev/$choice|grep SECURITY|cut -d '.' -f 1 )
-	if [[ $Security = '' ]]
+	Time=$( hdparm -I /dev/$choice|grep SECURITY|cut -d '.' -f 1 )
+	if [[ $Time = '' ]]
 	then
 		echo "Device doesn't appear to support the SECURITY ERASE command."
 		echo "Use DDwiper instead.  Aborting..."
@@ -40,7 +40,7 @@ else
 				echo ""
 			done
 			hdparm --user-master u --security-set-pass Wipe /dev/$choice > /dev/null #2>&1
-			echo "It should take $Security."
+			echo "It should take $Time."
 			echo "Issuing SECURITY ERASE command."
 			hdparm --user-master u --security-erase Wipe /dev/$choice > /dev/null #2>&1
 			echo ""
@@ -48,7 +48,7 @@ else
 		else
 			echo "Drive is frozen."
 			echo "Try quickly disconnecting and reconnecting the power to the drive"
-			echo "then 'Relaunch'."
+			echo "then relaunching."
 			echo "Aborting..."
 			exit 1
 		fi
