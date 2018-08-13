@@ -3,29 +3,30 @@ intHDD=$( lsblk|grep SWAP|cut -c 7,8,9 )
 while ! [[ $choice =~ ^sd[a-z]$ ]]
 do
 	clear
-	echo 'Secure Erase for SATA HDDs and SSDs'
-	echo ''
+	echo "Secure Erase for SATA HDDs and SSDs"
+	echo ""
 	lsblk|grep -v $intHDD|grep -v sr0
-	echo ''
-	read -p 'Please Enter a device choice from the above list (sdb, sdc, sdd etc.): ' choice
-	echo ''
+	echo ""
+	read -p "Please Enter a device choice from the above list (sdb, sdc, sdd etc.): " choice
+	echo ""
 done
 if [[ $choice = $intHDD ]]
 then
-	echo 'You have chosen the internal HDD. Aborting...'
+	echo "You have chosen the internal HDD. Aborting..."
 	exit 1
 elif [[ $( lsblk|grep $choice ) = '' ]]
 then
 	echo "No block device '$choice' found.  Aborting..."
 	exit 1
 else
-	Security=$( hdparm -I /dev/$choice|grep SECURITY|cut -d '.' -f 1 )
 	if [[ $( hdparm -I /dev/$choice 2>&1|grep SG_IO ) != '' ]]
 	then
 		echo "Device doesn't appear to support SATA commands."
-		echo "Is it a USB?  Use DDwiper instead.  Aborting..."
+		echo "Use DDwiper instead.  Aborting..."
 		exit 1
-	elif [[ $Security = '' ]]
+	fi
+	Security=$( hdparm -I /dev/$choice|grep SECURITY|cut -d '.' -f 1 )
+	if [[ $Security = '' ]]
 	then
 		echo "Device doesn't appear to support the SECURITY ERASE command."
 		echo "Use DDwiper instead.  Aborting..."
@@ -36,31 +37,31 @@ else
 			while ! [[ $verify =~ ^[yYnN]$ ]]
 			do
 				read -p "Do you wish to verify $choice has been wiped? (y/n): " verify
-				echo ''
+				echo ""
 			done
 			hdparm --user-master u --security-set-pass Wipe /dev/$choice > /dev/null #2>&1
 			echo "It should take $Security."
-			echo 'Issuing SECURITY ERASE command.'
+			echo "Issuing SECURITY ERASE command."
 			hdparm --user-master u --security-erase Wipe /dev/$choice > /dev/null #2>&1
-			echo ''
+			echo ""
 			echo "$choice has been wiped!"
 		else
-			echo 'Drive is frozen.'
-			echo 'Try quickly disconnecting and reconnecting the power to the drive'
+			echo "Drive is frozen."
+			echo "Try quickly disconnecting and reconnecting the power to the drive"
 			echo "then 'Relaunch'."
-			echo 'Aborting...'
+			echo "Aborting..."
 			exit 1
 		fi
 	fi
 fi
-echo ''
+echo ""
 if [[ $verify =~ ^[nN]$ ]]
 then
-	echo 'Not verifying...'
+	echo "Not verifying..."
 	exit 0
 else
-	echo 'Verifying...'
-	echo ''
+	echo "Verifying..."
+	echo ""
 	verified=$(pv /dev/$choice|cmp - /dev/zero 2>&1|grep -v EOF|cut -f 4,5 -d ' '|cut -d ',' -f 1 )
 	echo ''
 	if [[ $verified = '' ]]
