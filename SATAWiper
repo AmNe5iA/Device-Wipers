@@ -41,7 +41,7 @@ else
 			done
 			hdparm --user-master u --security-set-pass Wipe /dev/$choice > /dev/null #2>&1
 			echo "It should take $Time."
-			echo "Issuing SECURITY ERASE command."
+			echo "Issuing SECURITY ERASE command..."
 			hdparm --user-master u --security-erase Wipe /dev/$choice > /dev/null #2>&1
 			echo ""
 			echo "$choice has been wiped!"
