@@ -22,14 +22,14 @@ else
 	if [[ $( hdparm -I /dev/$choice 2>&1|grep SG_IO ) != '' ]]
 	then
 		echo "Device doesn't appear to support SATA commands."
-		echo "Use DDwiper instead.  Aborting..."
+		echo "Use DDWiper instead.  Aborting..."
 		exit 1
 	fi
 	Time=$( hdparm -I /dev/$choice|grep SECURITY|cut -d '.' -f 1 )
 	if [[ $Time = '' ]]
 	then
 		echo "Device doesn't appear to support the SECURITY ERASE command."
-		echo "Use DDwiper instead.  Aborting..."
+		echo "Use DDWiper instead.  Aborting..."
 		exit 1
 	else
 		if [[ $( hdparm -I /dev/$choice|grep frozen|cut -f 2 ) = 'not' ]]
@@ -40,7 +40,8 @@ else
 				echo ""
 			done
 			hdparm --user-master u --security-set-pass Wipe /dev/$choice > /dev/null #2>&1
-			date
+			echo -n "Start time: "
+			date +'%H:%M %d/%m/%Y'
 			echo "It should take $Time."
 			echo "Issuing SECURITY ERASE command..."
 			hdparm --user-master u --security-erase Wipe /dev/$choice > /dev/null #2>&1
