@@ -21,7 +21,7 @@ then
 else
 	if [[ $( hdparm -I /dev/$choice 2>&1|grep SG_IO ) != '' ]]
 	then
-		echo "Device doesn't appear to support SATA commands."
+		echo "Device doesn't appear to support ATA commands."
 		echo "Use DDWiper instead.  Aborting..."
 		exit 1
 	fi
