@@ -41,13 +41,13 @@ else
 			done
 			hdparm --user-master u --security-set-pass Wipe /dev/$choice > /dev/null #2>&1
 			echo -n "Start time: "
-			date +'%H:%M %d/%m/%Y'
+			date +'%H:%M:%S %d/%m/%Y'
 			echo "It should take $Time."
 			echo "Issuing SECURITY ERASE command..."
 			hdparm --user-master u --security-erase Wipe /dev/$choice > /dev/null #2>&1
 			echo ""
 			echo -n "End time: "
-			date +'%H:%M %d/%m/%Y'
+			date +'%H:%M:%S %d/%m/%Y'
 			echo "$choice has been wiped!"
 		else
 			echo "Drive is frozen."
