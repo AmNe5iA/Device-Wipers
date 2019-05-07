@@ -10,3 +10,5 @@ or
 "sudo ./DDWiper" - to use a dd command to wipe the device using 0x00s on every sector.
 
 Requires 'dc3dd', 'pv' and 'hdparm' commands are installed.
+
+Send BitCoins to: 1AmNe5iAYfYCGYFq7vpLWL4XRFxe21hh9D
